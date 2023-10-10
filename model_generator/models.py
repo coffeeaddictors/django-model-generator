@@ -22,6 +22,9 @@ class BaseModel(models.Model):
         'App'), on_delete=models.CASCADE)
     name = models.CharField(max_length=255, verbose_name=_('Model Name'))
 
+    def __str__(self) -> str:
+        return self.name
+
     class Meta:
         ordering = ('name',)
 
@@ -31,7 +34,8 @@ class ModelField(models.Model):
     Model to create fields for model
     '''
     model = models.ForeignKey(to=BaseModel, verbose_name=_(
-        'Model'), on_delete=models.CASCADE)
+        'Model'), on_delete=models.CASCADE, related_name='model_fields')
+
     name = models.CharField(max_length=255, verbose_name=_('Field Name'))
     type = models.IntegerField(
         default=constants.FieldType.CharField,
@@ -49,8 +53,10 @@ class FieldParameter(models.Model):
     @todo
     1. plan how to add choices
     '''
-    model_field = models.OneToOneField(
-        to=ModelField, verbose_name=_("Model Field"), on_delete=models.CASCADE)
+    model_field = models.ForeignKey(to=ModelField, verbose_name=_(
+        "Model Field"),
+        on_delete=models.CASCADE, related_name='field_parameters')
+
     verbose_name = models.CharField(
         max_length=200, verbose_name=_("Verbose Name"))
     primary_key = models.BooleanField(verbose_name=_("Primary Key?"))
