@@ -10,6 +10,12 @@ class BaseApp(models.Model):
     '''
     name = models.CharField(max_length=255, verbose_name=_('App Name'))
 
+    def __str__(self) -> str:
+        return self.name
+
+    class Meta:
+        ordering = ('name',)
+
 
 class BaseModel(models.Model):
     '''
@@ -41,6 +47,8 @@ class ModelField(models.Model):
         default=constants.FieldType.CharField,
         choices=constants.FieldType.choices, verbose_name=_('Field Type')
     )
+    parameters = models.OneToOneField(
+        to='FieldParameter', on_delete=models.CASCADE, related_name='field_parameters')
 
     class Meta:
         ordering = ('name',)
@@ -53,10 +61,6 @@ class FieldParameter(models.Model):
     @todo
     1. plan how to add choices
     '''
-    model_field = models.ForeignKey(to=ModelField, verbose_name=_(
-        "Model Field"),
-        on_delete=models.CASCADE, related_name='field_parameters')
-
     verbose_name = models.CharField(
         max_length=200, verbose_name=_("Verbose Name"))
     primary_key = models.BooleanField(verbose_name=_("Primary Key?"))
