@@ -1,6 +1,9 @@
 runserver:
 	python3 manage.py runserver
 
+r:
+	make runserver
+
 makemigrations:
 	python3 manage.py makemigrations
 
